@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// USUÁRIO (acesso único — a Débora)
+// ─────────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// CLIENTES
+// ─────────────────────────────────────────────
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  instagram String?
+  document  String?
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  quotes   Quote[]
+  expenses Expense[]
+  tasks    Task[]
+
+  @@map("clients")
+}
+
+// ─────────────────────────────────────────────
+// CONFIGURAÇÃO DE PREÇOS
+// ─────────────────────────────────────────────
+model PricingItem {
+  id          String          @id @default(cuid())
+  category    ServiceCategory
+  name        String
+  description String?
+  priceMin    Decimal         @db.Decimal(10, 2)
+  priceMax    Decimal?        @db.Decimal(10, 2)
+  unit        PricingUnit     @default(PER_UNIT)
+  active      Boolean         @default(true)
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("pricing_items")
+}
+
+model PricingConfig {
+  id                    String   @id @default(cuid())
+  graduationPctBasic    Decimal  @default(0.25) @db.Decimal(5, 4)
+  graduationPctComplex  Decimal  @default(0.30) @db.Decimal(5, 4)
+  pilotPct              Decimal  @default(0.50) @db.Decimal(5, 4)
+  plottingPricePerMeter Decimal  @default(8.50) @db.Decimal(10, 2)
+  kmPrice               Decimal  @default(1.50) @db.Decimal(10, 2)
+  updatedAt             DateTime @updatedAt
+
+  @@map("pricing_config")
+}
+
+// ─────────────────────────────────────────────
+// ORÇAMENTOS
+// ─────────────────────────────────────────────
+model Quote {
+  id            String      @id @default(cuid())
+  clientId      String
+  client        Client      @relation(fields: [clientId], references: [id])
+  status        QuoteStatus @default(AGUARDANDO)
+  discountPct   Decimal?    @db.Decimal(5, 4)
+  discountFixed Decimal?    @db.Decimal(10, 2)
+  totalGross    Decimal     @db.Decimal(10, 2)
+  totalNet      Decimal     @db.Decimal(10, 2)
+  notes         String?
+  validUntil    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  items    QuoteItem[]
+  expenses Expense[]
+  tasks    Task[]
+
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id            String          @id @default(cuid())
+  quoteId       String
+  quote         Quote           @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  category      ServiceCategory
+  description   String
+  quantity      Int             @default(1)
+  unitPrice     Decimal         @db.Decimal(10, 2)
+  discountPct   Decimal?        @db.Decimal(5, 4)
+  discountFixed Decimal?        @db.Decimal(10, 2)
+  finalPrice    Decimal         @db.Decimal(10, 2)
+  sortOrder     Int             @default(0)
+  sourceItemId  String?
+
+  @@map("quote_items")
+}
+
+// ─────────────────────────────────────────────
+// DESPESAS
+// ─────────────────────────────────────────────
+model Expense {
+  id          String   @id @default(cuid())
+  clientId    String?
+  client      Client?  @relation(fields: [clientId], references: [id])
+  quoteId     String?
+  quote       Quote?   @relation(fields: [quoteId], references: [id])
+  category    String
+  description String
+  amount      Decimal  @db.Decimal(10, 2)
+  date        DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("expenses")
+}
+
+// ─────────────────────────────────────────────
+// TAREFAS (TO-DO)
+// ─────────────────────────────────────────────
+model Task {
+  id               String       @id @default(cuid())
+  clientId         String?
+  client           Client?      @relation(fields: [clientId], references: [id])
+  quoteId          String?
+  quote            Quote?       @relation(fields: [quoteId], references: [id])
+  title            String
+  priority         TaskPriority @default(NORMAL)
+  dueDate          DateTime?
+  completedAt      DateTime?
+  telegramNotified Boolean      @default(false)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  pomodoroSessions PomodoroSession[]
+
+  @@map("tasks")
+}
+
+// ─────────────────────────────────────────────
+// SESSÕES POMODORO
+// ─────────────────────────────────────────────
+model PomodoroSession {
+  id          String    @id @default(cuid())
+  taskId      String?
+  task        Task?     @relation(fields: [taskId], references: [id])
+  durationMin Int       @default(25)
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  completed   Boolean   @default(false)
+
+  @@map("pomodoro_sessions")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+enum ServiceCategory {
+  DIGITALIZACAO
+  MODELAGEM
+  GRADUACAO
+  ENCAIXE
+  PLOTAGEM
+  PILOTO
+  CONVERSAO
+  CONSULTORIA
+  OUTROS
+}
+
+enum PricingUnit {
+  PER_UNIT
+  PER_METER
+  PER_FILE
+  PER_SIZE
+  PER_HOUR
+  PER_KM
+  PERCENTAGE
+}
+
+enum QuoteStatus {
+  AGUARDANDO
+  APROVADO
+  EM_ANDAMENTO
+  FINALIZADO
+  CANCELADO
+}
+
+enum TaskPriority {
+  ALTA
+  NORMAL
+  BAIXA
+}
