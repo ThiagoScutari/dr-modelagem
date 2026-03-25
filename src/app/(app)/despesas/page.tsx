@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listExpenses } from "@/app/actions/expenses";
 import { getPricingConfig } from "@/app/actions/pricing";
 import { ExpensesClient } from "./expenses-client";

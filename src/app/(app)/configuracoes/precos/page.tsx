@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listPricingItems } from "@/app/actions/pricing";
 import { ServiceCategory } from "@prisma/client";
 import { PricingCategorySection } from "./pricing-category-section";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPricingConfig } from "@/app/actions/pricing";
 import { ParametrosForm } from "./parametros-form";
 

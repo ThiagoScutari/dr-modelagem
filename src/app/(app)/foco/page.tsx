@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listTasks } from "@/app/actions/tasks";
 import { getPomodoroStats } from "@/app/actions/pomodoro";
 import { FocoClient } from "./foco-client";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPresenterConfig } from "@/app/actions/presenter";
 import { PrestadoraForm } from "./prestadora-form";
 

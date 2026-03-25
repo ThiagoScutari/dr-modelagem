@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { listQuotes } from "@/app/actions/quotes";
 import { QuoteListClient } from "./quote-list-client";
 

@@ -32,7 +32,15 @@
       "Bash(npx playwright:*)",
       "Bash(for file:*)",
       "Bash(do)",
-      "Bash(sed -i 's/fixed bottom-24 right-5/fixed bottom-24 right-5 lg:bottom-8/g' \"$file\")"
+      "Bash(sed -i 's/fixed bottom-24 right-5/fixed bottom-24 right-5 lg:bottom-8/g' \"$file\")",
+      "Bash(vercel --version)",
+      "Bash(npm i:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel --prod --yes)",
+      "Bash(vercel env:*)",
+      "Bash(printf \"4ed73a88d0f13fc6a0cb7d7493000b89201b4a1302921f831d13c04725ac367f\")",
+      "Bash(vercel inspect:*)",
+      "Bash(vercel logs:*)"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
