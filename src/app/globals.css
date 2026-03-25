@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ─── Paleta DR Modelagem ─── */
+  --color-mar: #1A6E8C;
+  --color-mar-dark: #0F4A60;
+  --color-mar-light: #7BB8CC;
+
+  --color-areia: #E8C97A;
+  --color-areia-dark: #C4A040;
+  --color-areia-light: #F5EDD6;
+
+  --color-poente: #E07848;
+  --color-poente-dark: #B85830;
+  --color-poente-light: #F0B898;
+
+  --color-espuma: #C8E8DC;
+  --color-espuma-dark: #8ECAB6;
+  --color-espuma-light: #EAF6F2;
+
+  --color-noite: #1C3D4F;
+  --color-noite-dark: #0E2030;
+  --color-noite-light: #3D6070;
+
+  --color-ceu: #7BB8CC;
+  --color-ceu-dark: #4A90A8;
+  --color-ceu-light: #B8D8E8;
+
+  --color-creme: #FAF6EE;
+  --color-creme-dark: #F0E8D0;
+  --color-creme-light: #FDFAF5;
+
+  --color-coral: #B81C1C;
+  --color-coral-dark: #8A1010;
+  --color-coral-light: #E05050;
+
+  --color-floresta: #2E6B30;
+  --color-floresta-dark: #1A4A1C;
+  --color-floresta-light: #5A9E5C;
+
+  /* ─── Tipografia ─── */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "DM Mono", Consolas, monospace;
+
+  /* ─── Sombras ─── */
+  --shadow-glass: 0 4px 24px rgba(26, 110, 140, 0.08);
+  --shadow-card: 0 2px 12px rgba(28, 61, 79, 0.06);
+  --shadow-float: 0 8px 32px rgba(26, 110, 140, 0.12);
+}
+
+/* ─── Tokens semânticos ─── */
+:root {
+  --color-primary: #1A6E8C;
+  --color-accent: #E8C97A;
+  --color-warning: #E07848;
+  --color-surface: #C8E8DC;
+  --color-text: #1C3D4F;
+  --color-ui: #7BB8CC;
+  --color-background: #FAF6EE;
+  --color-danger: #B81C1C;
+  --color-success: #2E6B30;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-creme);
+  color: var(--color-noite);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Safe area para iOS ─── */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Glass morphism ─── */
+.glass {
+  background: rgba(250, 246, 238, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(123, 184, 204, 0.22);
+}
+
+/* ─── Card base ─── */
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(28, 61, 79, 0.06);
+  border: 1px solid rgba(123, 184, 204, 0.1);
+  padding: 20px;
+}
+
+/* ─── Input base ─── */
+.input-base {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(123, 184, 204, 0.4);
+  background: rgba(200, 232, 220, 0.2);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--color-noite);
+  outline: none;
+  transition: all 200ms;
+}
+
+.input-base::placeholder {
+  color: rgba(28, 61, 79, 0.4);
+}
+
+.input-base:focus {
+  ring: 2px;
+  ring-color: rgba(26, 110, 140, 0.3);
+  border-color: var(--color-mar);
+}
+
+/* ─── Tap target mínimo (48px) ─── */
+.tap-target {
+  min-height: 48px;
+  min-width: 48px;
+}
