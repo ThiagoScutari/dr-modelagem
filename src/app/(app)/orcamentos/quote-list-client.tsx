@@ -80,7 +80,7 @@ export function QuoteListClient({
           <p className="text-sm">Nenhum orçamento encontrado</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
           {filtered.map((q) => (
             <Link
               key={q.id}
@@ -109,7 +109,7 @@ export function QuoteListClient({
       {/* FAB */}
       <Link
         href="/orcamentos/novo"
-        className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-mar text-white shadow-float hover:bg-mar-dark active:scale-95 transition-all"
+        className="fixed bottom-24 right-5 lg:bottom-8 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-mar text-white shadow-float hover:bg-mar-dark active:scale-95 transition-all"
         aria-label="Novo orçamento"
       >
         <Plus className="h-6 w-6" />

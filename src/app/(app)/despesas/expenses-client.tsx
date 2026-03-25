@@ -178,7 +178,7 @@ export function ExpensesClient({ initialExpenses, kmPrice }: Props) {
       <button
         type="button"
         onClick={() => setShowForm(true)}
-        className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-coral text-white shadow-float hover:bg-coral-dark active:scale-95 transition-all"
+        className="fixed bottom-24 right-5 lg:bottom-8 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-coral text-white shadow-float hover:bg-coral-dark active:scale-95 transition-all"
         aria-label="Nova despesa"
       >
         <Plus className="h-6 w-6" />

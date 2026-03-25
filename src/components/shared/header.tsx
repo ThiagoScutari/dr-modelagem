@@ -38,8 +38,8 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40 glass border-b border-ceu/20">
-      <div className="mx-auto flex h-14 max-w-lg items-center gap-3 px-5">
+    <header className="sticky top-0 z-40 glass border-b border-ceu/20 lg:border-none lg:bg-transparent lg:backdrop-blur-none">
+      <div className="mx-auto flex h-14 max-w-lg lg:max-w-5xl items-center gap-3 px-5 lg:px-8">
         {parentRoute && (
           <button
             type="button"

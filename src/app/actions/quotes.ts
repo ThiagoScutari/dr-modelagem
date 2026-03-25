@@ -6,6 +6,10 @@ import { z } from "zod/v4";
 import { auth } from "@/lib/auth";
 import { QuoteStatus, ServiceCategory } from "@prisma/client";
 import { redirect } from "next/navigation";
+import {
+  sendTelegramNotification,
+  telegramTemplates,
+} from "@/lib/telegram";
 
 // ─── Schemas ───
 
@@ -148,8 +152,19 @@ export async function updateQuoteStatus(id: string, status: QuoteStatus) {
         quoteId: quote.id,
         title: `Iniciar ${categories} — ${quote.client.name}`,
         priority: "ALTA",
+        dueDate: quote.validUntil,
       },
     });
+
+    // Telegram — fire-and-forget
+    sendTelegramNotification(
+      telegramTemplates.quoteApproved(
+        quote.client.name,
+        categories,
+        Number(quote.totalNet),
+        quote.validUntil?.toISOString() ?? null
+      )
+    );
   }
 
   revalidatePath("/orcamentos");
