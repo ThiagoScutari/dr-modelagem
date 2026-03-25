@@ -112,11 +112,13 @@ export function ExpensesPDF({
   presenter,
   period,
   clientFilter,
+  logoSrc,
 }: {
   expenses: ExpensePDFItem[];
   presenter: PresenterData;
   period: string;
   clientFilter?: string;
+  logoSrc?: string;
 }) {
   const total = expenses.reduce((s, e) => s + e.amount, 0);
 
@@ -124,7 +126,7 @@ export function ExpensesPDF({
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Image src="/logo.png" style={styles.logo} />
+          {logoSrc && <Image src={logoSrc} style={styles.logo} />}
           <View>
             <Text style={styles.title}>RELATÓRIO DE DESPESAS</Text>
             <Text style={styles.subtitle}>{period}</Text>

@@ -153,9 +153,11 @@ interface PresenterPDFData {
 export function QuotePDF({
   quote,
   presenter,
+  logoSrc,
 }: {
   quote: QuotePDFData;
   presenter: PresenterPDFData;
+  logoSrc?: string;
 }) {
   const categories = [...new Set(quote.items.map((i) => i.category))];
   const discountValue =
@@ -166,7 +168,7 @@ export function QuotePDF({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Image src="/logo.png" style={styles.logo} />
+          {logoSrc && <Image src={logoSrc} style={styles.logo} />}
           <Text style={styles.title}>ORÇAMENTO</Text>
         </View>
 

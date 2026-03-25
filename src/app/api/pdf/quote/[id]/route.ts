@@ -5,6 +5,10 @@ import { getPresenterConfig } from "@/app/actions/presenter";
 import { QuotePDF } from "@/lib/pdf/quote-pdf";
 import { auth } from "@/lib/auth";
 
+const LOGO_URL = process.env.NEXTAUTH_URL
+  ? `${process.env.NEXTAUTH_URL}/logo.png`
+  : "http://localhost:3000/logo.png";
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -30,8 +34,11 @@ export async function GET(
     });
   }
 
+  const logoSrc = LOGO_URL;
+
   const pdfBuffer = await renderToBuffer(
     QuotePDF({
+      logoSrc,
       quote: {
         clientName: quote.client.name,
         clientDocument: quote.client.document,

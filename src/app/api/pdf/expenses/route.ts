@@ -5,6 +5,10 @@ import { getPresenterConfig } from "@/app/actions/presenter";
 import { ExpensesPDF } from "@/lib/pdf/expenses-pdf";
 import { auth } from "@/lib/auth";
 
+const LOGO_URL = process.env.NEXTAUTH_URL
+  ? `${process.env.NEXTAUTH_URL}/logo.png`
+  : "http://localhost:3000/logo.png";
+
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) {
@@ -26,8 +30,11 @@ export async function GET(req: NextRequest) {
   const now = new Date();
   const period = `${now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })}`;
 
+  const logoSrc = LOGO_URL;
+
   const pdfBuffer = await renderToBuffer(
     ExpensesPDF({
+      logoSrc,
       expenses: expenses.map((e) => ({
         description: e.description,
         category: e.category,
