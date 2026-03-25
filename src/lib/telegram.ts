@@ -1,13 +1,18 @@
 import { formatBRL, formatDate } from "@/lib/format";
 
-const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+function getTelegramApi(): string {
+  return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+}
 
 export async function sendTelegramMessage(
   chatId: string,
   text: string
 ): Promise<boolean> {
   try {
-    const res = await fetch(`${TELEGRAM_API}/sendMessage`, {
+    const apiUrl = getTelegramApi();
+    if (apiUrl.includes("undefined")) return false;
+
+    const res = await fetch(`${apiUrl}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -24,10 +29,10 @@ export async function sendTelegramMessage(
 
 export async function sendTelegramNotification(
   text: string
-): Promise<void> {
+): Promise<boolean> {
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!chatId || !process.env.TELEGRAM_BOT_TOKEN) return;
-  await sendTelegramMessage(chatId, text);
+  if (!chatId || !process.env.TELEGRAM_BOT_TOKEN) return false;
+  return sendTelegramMessage(chatId, text);
 }
 
 // ─── Templates de mensagem ───

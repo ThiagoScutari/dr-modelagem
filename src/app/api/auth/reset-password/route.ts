@@ -5,7 +5,7 @@ import { sendTelegramNotification } from "@/lib/telegram";
 
 const words = ["Mar", "Sol", "Praia", "Onda", "Areia"];
 
-function generateTempPassword(): string {
+export function generateTempPassword(): string {
   const word = words[Math.floor(Math.random() * words.length)];
   const num = Math.floor(Math.random() * 9000) + 1000;
   return `${word}@${num}`;
