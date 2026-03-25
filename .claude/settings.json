@@ -14,7 +14,15 @@
       "Bash(npm run:*)",
       "Bash(npm uninstall:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(ls -la /c/workspace/dr-modelagem/.env*)",
+      "Bash(node -e \"require\\(''dotenv''\\).config\\({path:''.env.local''}\\); console.log\\(''URL exists:'', !!process.env.DATABASE_URL\\)\")",
+      "Bash(node -e \"require\\(''dotenv''\\).config\\({path:''.env.local''}\\); console.log\\(''URL exists:'', Boolean\\(process.env.DATABASE_URL\\)\\)\")",
+      "Bash(DATABASE_URL=\"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:5432/postgres\" npx prisma migrate dev --name init)",
+      "Bash(npx tsx -e \":*)",
+      "Bash(npx tsx:*)",
+      "Bash(node -e \":*)",
+      "Bash(export DATABASE_URL=\"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:5432/postgres\")"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
@@ -22,7 +30,9 @@
       "C:\\workspace\\dr-modelagem\\src",
       "C:\\workspace\\dr-modelagem\\src\\app\\api\\auth",
       "C:\\workspace\\dr-modelagem\\src\\app",
-      "C:\\workspace\\dr-modelagem\\src\\components"
+      "C:\\workspace\\dr-modelagem\\src\\components",
+      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\configuracoes\\precos",
+      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\configuracoes"
     ]
   }
 }
