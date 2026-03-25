@@ -1,11 +1,16 @@
 "use client";
 
-import { X, Pencil, Trash2, MessageCircle } from "lucide-react";
-import { initials, avatarColor, formatPhone, formatCNPJ, formatCPF } from "@/lib/format";
-import { deleteClient } from "@/app/actions/clients";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { X, Pencil, Trash2, MessageCircle, ChevronRight } from "lucide-react";
+import { initials, avatarColor, formatPhone, formatCNPJ, formatCPF, formatBRL, formatDate } from "@/lib/format";
+import { deleteClient, getClientStats } from "@/app/actions/clients";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/loading";
 import type { ClientData } from "./client-list";
+import type { QuoteStatus } from "@prisma/client";
 
 interface Props {
   client: ClientData;
@@ -14,8 +19,19 @@ interface Props {
   onDeleted: (id: string) => void;
 }
 
+interface ClientStats {
+  totalRevenue: number;
+  totalExpenses: number;
+  recentQuotes: { id: string; status: QuoteStatus; totalNet: number; createdAt: string }[];
+}
+
 export function ClientDetailSheet({ client, onClose, onEdit, onDeleted }: Props) {
   const { toast } = useToast();
+  const [stats, setStats] = useState<ClientStats | null>(null);
+
+  useEffect(() => {
+    getClientStats(client.id).then(setStats);
+  }, [client.id]);
 
   function formatDocument(doc: string) {
     const digits = doc.replace(/\D/g, "");
@@ -86,17 +102,64 @@ export function ClientDetailSheet({ client, onClose, onEdit, onDeleted }: Props)
           )}
         </div>
 
-        {/* Histórico (placeholder) */}
-        <div className="rounded-xl bg-creme p-4 mb-4">
-          <p className="text-xs font-semibold text-noite/50 uppercase tracking-wide mb-2">
-            Orçamentos
-          </p>
-          {client.quotesCount > 0 ? (
-            <p className="text-sm text-noite">
-              {client.quotesCount} orçamento(s) vinculado(s)
-            </p>
+        {/* Stats + Histórico */}
+        <div className="rounded-xl bg-creme p-4 mb-4 space-y-3">
+          {!stats ? (
+            <Spinner className="h-5 w-5" />
           ) : (
-            <p className="text-sm text-noite/40">Nenhum orçamento ainda</p>
+            <>
+              <div className="flex gap-3">
+                <div className="flex-1 text-center">
+                  <p className="text-xs text-noite/50">Receita</p>
+                  <p className="text-sm font-mono font-semibold text-floresta">
+                    {formatBRL(stats.totalRevenue)}
+                  </p>
+                </div>
+                <div className="flex-1 text-center">
+                  <p className="text-xs text-noite/50">Despesas</p>
+                  <p className="text-sm font-mono font-semibold text-coral">
+                    {formatBRL(stats.totalExpenses)}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-xs font-semibold text-noite/50 uppercase tracking-wide">
+                    Orçamentos recentes
+                  </p>
+                  {client.quotesCount > 5 && (
+                    <Link
+                      href={`/orcamentos?client=${client.id}`}
+                      className="text-[10px] text-mar font-medium flex items-center gap-0.5"
+                    >
+                      Ver todos <ChevronRight className="h-2.5 w-2.5" />
+                    </Link>
+                  )}
+                </div>
+                {stats.recentQuotes.length === 0 ? (
+                  <p className="text-sm text-noite/40">Nenhum orçamento</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {stats.recentQuotes.map((q) => (
+                      <Link
+                        key={q.id}
+                        href={`/orcamentos/${q.id}`}
+                        className="flex items-center justify-between rounded-lg bg-white/60 px-3 py-2 text-xs hover:bg-white transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Badge status={q.status} />
+                          <span className="text-noite/50">{formatDate(q.createdAt)}</span>
+                        </div>
+                        <span className="font-mono font-medium text-noite">
+                          {formatBRL(q.totalNet)}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
 

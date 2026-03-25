@@ -1,10 +1,28 @@
-import { LayoutDashboard } from "lucide-react";
+import {
+  getDashboardSummary,
+  getMonthlyRevenue,
+  getRecentQuotes,
+} from "@/app/actions/dashboard";
+import { DashboardClient } from "./dashboard-client";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const [summary, monthly, recent] = await Promise.all([
+    getDashboardSummary("month"),
+    getMonthlyRevenue(),
+    getRecentQuotes(),
+  ]);
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-noite/30">
-      <LayoutDashboard className="h-16 w-16" />
-      <p className="text-sm font-medium">Dashboard — em breve</p>
-    </div>
+    <DashboardClient
+      summary={summary}
+      monthly={monthly}
+      recentQuotes={recent.map((q) => ({
+        id: q.id,
+        clientName: q.client.name,
+        status: q.status,
+        totalNet: Number(q.totalNet),
+        createdAt: q.createdAt.toISOString(),
+      }))}
+    />
   );
 }

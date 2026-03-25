@@ -1,10 +1,26 @@
-import { Receipt } from "lucide-react";
+import { listExpenses } from "@/app/actions/expenses";
+import { getPricingConfig } from "@/app/actions/pricing";
+import { ExpensesClient } from "./expenses-client";
 
-export default function DespesasPage() {
+export default async function DespesasPage() {
+  const [expenses, config] = await Promise.all([
+    listExpenses(),
+    getPricingConfig(),
+  ]);
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-noite/30">
-      <Receipt className="h-16 w-16" />
-      <p className="text-sm font-medium">Despesas — em breve</p>
-    </div>
+    <ExpensesClient
+      initialExpenses={expenses.map((e) => ({
+        id: e.id,
+        description: e.description,
+        category: e.category,
+        amount: Number(e.amount),
+        date: e.date.toISOString(),
+        clientName: e.client?.name ?? null,
+        clientId: e.clientId,
+        quoteId: e.quoteId,
+      }))}
+      kmPrice={config ? Number(config.kmPrice) : 1.5}
+    />
   );
 }
