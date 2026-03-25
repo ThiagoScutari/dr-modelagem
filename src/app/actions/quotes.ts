@@ -21,6 +21,8 @@ const quoteItemSchema = z.object({
   discountPct: z.number().min(0).max(1).default(0),
   sortOrder: z.number().default(0),
   sourceItemId: z.string().nullable().default(null),
+  graduationPct: z.number().min(0).max(1).nullable().default(null),
+  basePrice: z.number().min(0).nullable().default(null),
 });
 
 const createQuoteSchema = z.object({
@@ -62,6 +64,8 @@ export async function createQuote(
     finalPrice: calcFinalPrice(item.unitPrice, item.quantity, item.discountPct),
     sortOrder: i,
     sourceItemId: item.sourceItemId,
+    graduationPct: item.graduationPct,
+    basePrice: item.basePrice,
   }));
 
   const totalGross = itemsWithPrice.reduce((s, i) => s + i.finalPrice, 0);
@@ -103,6 +107,8 @@ export async function updateQuote(
     finalPrice: calcFinalPrice(item.unitPrice, item.quantity, item.discountPct),
     sortOrder: i,
     sourceItemId: item.sourceItemId,
+    graduationPct: item.graduationPct,
+    basePrice: item.basePrice,
   }));
 
   const totalGross = itemsWithPrice.reduce((s, i) => s + i.finalPrice, 0);
@@ -214,6 +220,8 @@ export async function duplicateQuote(id: string) {
           finalPrice: item.finalPrice,
           sortOrder: item.sortOrder,
           sourceItemId: item.sourceItemId,
+          graduationPct: item.graduationPct,
+          basePrice: item.basePrice,
         })),
       },
     },

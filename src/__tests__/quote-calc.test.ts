@@ -7,6 +7,7 @@ import {
   calcPilotPrice,
   replicateItems,
   recalcDraft,
+  recalcGraduationItem,
 } from "../lib/quote-calc";
 import type { QuoteItemDraft } from "../types/quote";
 
@@ -94,7 +95,7 @@ describe("replicateItems — caso CEI Menino Jesus", () => {
     makeItem({ id: "m5", description: "Blusão Careca", unitPrice: 100 }),
   ];
 
-  it("replica para graduação com 25%", () => {
+  it("replica para graduação com 25% e popula graduationPct/basePrice", () => {
     const graduacao = replicateItems(modelagem, "GRADUACAO", config);
     expect(graduacao).toHaveLength(5);
     expect(graduacao[0].unitPrice).toBeCloseTo(32.5); // 130 × 0.25
@@ -103,6 +104,10 @@ describe("replicateItems — caso CEI Menino Jesus", () => {
     expect(graduacao[3].unitPrice).toBeCloseTo(37.5); // 150 × 0.25
     expect(graduacao[4].unitPrice).toBeCloseTo(25); // 100 × 0.25
     expect(graduacao[0].category).toBe("GRADUACAO");
+    // novos campos
+    expect(graduacao[0].graduationPct).toBe(0.25);
+    expect(graduacao[0].basePrice).toBe(130);
+    expect(graduacao[2].basePrice).toBe(80);
   });
 
   it("replica para piloto com 50%", () => {
@@ -125,6 +130,78 @@ describe("replicateItems — caso CEI Menino Jesus", () => {
 
     // Total
     expect(modelagemTotal + graduacaoTotal).toBe(1450);
+  });
+});
+
+describe("replicateItems — graduação novos campos", () => {
+  const config = {
+    graduationPctBasic: 0.25,
+    graduationPctComplex: 0.3,
+    pilotPct: 0.5,
+    plottingPricePerMeter: 8.5,
+    kmPrice: 1.5,
+  };
+
+  it("piloto NÃO recebe graduationPct/basePrice", () => {
+    const source = [makeItem({ id: "p1", unitPrice: 100 })];
+    const piloto = replicateItems(source, "PILOTO", config);
+    expect(piloto[0].graduationPct).toBeUndefined();
+    expect(piloto[0].basePrice).toBeUndefined();
+  });
+});
+
+describe("recalcGraduationItem", () => {
+  it("recalcula ao alterar percentual para 40%", () => {
+    const item = makeItem({
+      category: "GRADUACAO",
+      basePrice: 100,
+      graduationPct: 0.25,
+      unitPrice: 25,
+      quantity: 3,
+    });
+    const updated = recalcGraduationItem(item, 0.40);
+    expect(updated.graduationPct).toBe(0.40);
+    expect(updated.unitPrice).toBe(40);
+    expect(updated.finalPrice).toBe(120); // 40 × 3
+  });
+
+  it("caso real: R$100 × 25% × 3 tamanhos = R$75", () => {
+    const item = makeItem({
+      category: "GRADUACAO",
+      basePrice: 100,
+      graduationPct: 0.25,
+      unitPrice: 25,
+      quantity: 3,
+    });
+    const updated = recalcGraduationItem(item, 0.25);
+    expect(updated.finalPrice).toBe(75);
+  });
+
+  it("caso real: R$130 × 25% × 6 tamanhos = R$195 (CEI)", () => {
+    const item = makeItem({
+      category: "GRADUACAO",
+      basePrice: 130,
+      graduationPct: 0.25,
+      unitPrice: 32.5,
+      quantity: 6,
+    });
+    const updated = recalcGraduationItem(item, 0.25);
+    expect(updated.finalPrice).toBe(195);
+  });
+
+  it("respeita discountPct do item ao recalcular", () => {
+    const item = makeItem({
+      category: "GRADUACAO",
+      basePrice: 100,
+      graduationPct: 0.25,
+      unitPrice: 25,
+      quantity: 2,
+      discountPct: 0.1,
+    });
+    const updated = recalcGraduationItem(item, 0.50);
+    expect(updated.unitPrice).toBe(50);
+    // 50 × 2 × (1 - 0.1) = 90
+    expect(updated.finalPrice).toBeCloseTo(90);
   });
 });
 

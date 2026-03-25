@@ -40,12 +40,13 @@ export function replicateItems(
 ): QuoteItemDraft[] {
   return sourceItems.map((item) => {
     let unitPrice = item.unitPrice;
+    let graduationPct: number | undefined;
+    let basePrice: number | undefined;
 
     if (targetCategory === "GRADUACAO") {
-      unitPrice = calcGraduationPrice(
-        item.unitPrice,
-        config.graduationPctBasic
-      );
+      graduationPct = config.graduationPctBasic;
+      basePrice = item.unitPrice;
+      unitPrice = calcGraduationPrice(item.unitPrice, graduationPct);
     } else if (targetCategory === "PILOTO") {
       unitPrice = calcPilotPrice(item.unitPrice, config.pilotPct);
     }
@@ -59,8 +60,24 @@ export function replicateItems(
       discountPct: 0,
       finalPrice: unitPrice * item.quantity,
       sourceItemId: item.id,
+      graduationPct,
+      basePrice,
     };
   });
+}
+
+/** Recalcula unitPrice e finalPrice de um item de graduação ao alterar % */
+export function recalcGraduationItem(
+  item: QuoteItemDraft,
+  newPct: number
+): Partial<QuoteItemDraft> {
+  const base = item.basePrice ?? 0;
+  const unitPrice = base * newPct;
+  return {
+    graduationPct: newPct,
+    unitPrice,
+    finalPrice: unitPrice * item.quantity * (1 - item.discountPct),
+  };
 }
 
 /** Recalcula finalPrice + totais do draft inteiro */

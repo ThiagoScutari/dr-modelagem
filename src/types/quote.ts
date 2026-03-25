@@ -9,6 +9,8 @@ export interface QuoteItemDraft {
   discountPct: number; // 0 a 1
   finalPrice: number; // calculado
   sourceItemId: string | null;
+  graduationPct?: number; // 0 a 1 — apenas para GRADUACAO
+  basePrice?: number; // valor do molde origem — apenas para GRADUACAO
 }
 
 export interface QuoteDraft {

@@ -9,6 +9,7 @@ import {
   calcItemFinalPrice,
   replicateItems,
   recalcDraft,
+  recalcGraduationItem,
 } from "@/lib/quote-calc";
 
 function emptyDraft(): QuoteDraft {
@@ -45,6 +46,7 @@ interface QuoteDraftStore {
     config: PricingConfigValues,
     replace: boolean
   ) => void;
+  updateItemGraduationPct: (id: string, pct: number) => void;
   applyBatchAdjustment: (
     target: ServiceCategory | "ALL",
     type: "PCT" | "FIXED",
@@ -134,6 +136,15 @@ export const useQuoteDraft = create<QuoteDraftStore>((set) => ({
         items = [...s.draft.items, ...replicated];
       }
 
+      const recalced = recalcDraft(items, s.draft.discountPct);
+      return { draft: { ...s.draft, ...recalced } };
+    }),
+
+  updateItemGraduationPct: (id, pct) =>
+    set((s) => {
+      const items = s.draft.items.map((i) =>
+        i.id === id ? { ...i, ...recalcGraduationItem(i, pct) } : i
+      );
       const recalced = recalcDraft(items, s.draft.discountPct);
       return { draft: { ...s.draft, ...recalced } };
     }),
