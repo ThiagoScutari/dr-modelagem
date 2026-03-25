@@ -22,7 +22,12 @@
       "Bash(npx tsx -e \":*)",
       "Bash(npx tsx:*)",
       "Bash(node -e \":*)",
-      "Bash(export DATABASE_URL=\"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:5432/postgres\")"
+      "Bash(export DATABASE_URL=\"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:5432/postgres\")",
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)",
+      "Bash(npx vitest:*)"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
@@ -32,7 +37,12 @@
       "C:\\workspace\\dr-modelagem\\src\\app",
       "C:\\workspace\\dr-modelagem\\src\\components",
       "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\configuracoes\\precos",
-      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\configuracoes"
+      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\configuracoes",
+      "C:\\workspace\\dr-modelagem\\src\\types",
+      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\orcamentos\\novo",
+      "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\orcamentos\\[id]",
+      "C:\\workspace\\dr-modelagem\\src\\lib",
+      "C:\\workspace\\dr-modelagem\\src\\app\\api\\pdf"
     ]
   }
 }

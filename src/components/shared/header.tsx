@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 const titles: Record<string, string> = {
   "/dashboard": "Início",
   "/orcamentos": "Orçamentos",
+  "/orcamentos/novo": "Novo Orçamento",
   "/despesas": "Despesas",
   "/foco": "Foco",
   "/configuracoes": "Configurações",
@@ -20,13 +21,21 @@ const subRouteParents: Record<string, string> = {
   "/configuracoes/parametros": "/configuracoes",
   "/configuracoes/clientes": "/configuracoes",
   "/configuracoes/prestadora": "/configuracoes",
+  "/orcamentos/novo": "/orcamentos",
 };
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const title = titles[pathname] ?? "DR Modelagem";
-  const parentRoute = subRouteParents[pathname];
+
+  // Handle dynamic routes like /orcamentos/[id]
+  let title = titles[pathname] ?? "DR Modelagem";
+  let parentRoute = subRouteParents[pathname] ?? null;
+
+  if (pathname.startsWith("/orcamentos/") && pathname !== "/orcamentos/novo") {
+    title = "Orçamento";
+    parentRoute = "/orcamentos";
+  }
 
   return (
     <header className="sticky top-0 z-40 glass border-b border-ceu/20">

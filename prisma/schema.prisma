@@ -71,6 +71,22 @@ model PricingConfig {
 }
 
 // ─────────────────────────────────────────────
+// DADOS DA PRESTADORA (singleton)
+// ─────────────────────────────────────────────
+model PresenterConfig {
+  id              String   @id @default(cuid())
+  name            String
+  razaoSocial     String
+  cnpj            String
+  observations    String   @db.Text
+  telegramToken   String?
+  telegramChatId  String?
+  updatedAt       DateTime @updatedAt
+
+  @@map("presenter_config")
+}
+
+// ─────────────────────────────────────────────
 // ORÇAMENTOS
 // ─────────────────────────────────────────────
 model Quote {

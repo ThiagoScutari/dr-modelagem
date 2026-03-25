@@ -1,10 +1,20 @@
-import { FileText } from "lucide-react";
+import { listQuotes } from "@/app/actions/quotes";
+import { QuoteListClient } from "./quote-list-client";
 
-export default function OrcamentosPage() {
+export default async function OrcamentosPage() {
+  const quotes = await listQuotes();
+
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-noite/30">
-      <FileText className="h-16 w-16" />
-      <p className="text-sm font-medium">Orçamentos — em breve</p>
-    </div>
+    <QuoteListClient
+      initialQuotes={quotes.map((q) => ({
+        id: q.id,
+        clientName: q.client.name,
+        status: q.status,
+        totalNet: Number(q.totalNet),
+        createdAt: q.createdAt.toISOString(),
+        validUntil: q.validUntil?.toISOString() ?? null,
+        itemsCount: q._count.items,
+      }))}
+    />
   );
 }
