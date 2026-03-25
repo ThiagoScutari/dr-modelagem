@@ -284,3 +284,19 @@ Agora que há dados de orçamentos e despesas, atualizar a tela de detalhe do cl
 - "Receita líquida" = receita - despesas do mesmo período
 - Para datas relativas ("há 2 dias"), usar a lib `date-fns` (já vem com Next.js) com locale `pt-BR`
 - O cálculo de deslocamento km×preço deve ser transparente — mostrar o cálculo para a Débora confirmar
+
+---
+
+## Backlog herdado do Sprint 03
+
+### BACK-02 — Edição de orçamento existente
+**Rota:** /orcamentos/[id]/editar
+**Problema:** Botão "Editar" no detalhe leva a 404.
+**Solução:** Criar página de edição que carrega o orçamento
+existente no Zustand store e reutiliza o wizard de 3 passos
+(Passos 1, 2 e 3 já existem em /orcamentos/novo/).
+**Prioridade:** Alta — funcionalidade essencial para a Débora
+corrigir valores após envio.
+**Arquivos a criar:**
+- src/app/(app)/orcamentos/[id]/editar/page.tsx
+- Reutilizar QuoteDraftStore com loadDraft(quote)
