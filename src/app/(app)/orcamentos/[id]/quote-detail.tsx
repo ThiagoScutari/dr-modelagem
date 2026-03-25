@@ -50,6 +50,8 @@ interface QuoteItem {
   discountFixed: number | null;
   sortOrder: number;
   sourceItemId: string | null;
+  graduationPct: number | null;
+  basePrice: number | null;
 }
 
 interface QuoteData {
@@ -175,7 +177,9 @@ export function QuoteDetail({
                       {formatBRL(item.unitPrice)}
                     </td>
                     <td className="px-2 py-2 text-center text-noite/60">
-                      ×{item.quantity}
+                      {item.category === "GRADUACAO" && item.graduationPct != null
+                        ? `${Math.round(item.graduationPct * 100)}% × ${item.quantity} tam.`
+                        : `×${item.quantity}`}
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-medium text-noite">
                       {formatBRL(item.finalPrice)}

@@ -33,6 +33,8 @@ export default async function QuoteDetailPage({
           finalPrice: Number(i.finalPrice),
           discountPct: i.discountPct ? Number(i.discountPct) : null,
           discountFixed: i.discountFixed ? Number(i.discountFixed) : null,
+          graduationPct: i.graduationPct ? Number(i.graduationPct) : null,
+          basePrice: i.basePrice ? Number(i.basePrice) : null,
         })),
       }}
       presenter={

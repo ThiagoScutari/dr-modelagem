@@ -129,6 +129,8 @@ interface QuotePDFItem {
   quantity: number;
   unitPrice: number;
   finalPrice: number;
+  graduationPct?: number | null;
+  basePrice?: number | null;
 }
 
 interface QuotePDFData {
@@ -224,8 +226,14 @@ export function QuotePDF({
                   <Text style={styles.colDesc}>{item.description}</Text>
                   <Text style={styles.colUnit}>
                     {formatCurrency(item.unitPrice)}
+                    {item.category === "GRADUACAO" && item.graduationPct
+                      ? ` (${Math.round(item.graduationPct * 100)}%)`
+                      : ""}
                   </Text>
-                  <Text style={styles.colQty}>{item.quantity}</Text>
+                  <Text style={styles.colQty}>
+                    {item.quantity}
+                    {item.category === "GRADUACAO" ? " tam." : ""}
+                  </Text>
                   <Text style={styles.colTotal}>
                     {formatCurrency(item.finalPrice)}
                   </Text>

@@ -34,6 +34,8 @@ export default async function EditarOrcamentoPage({
           discountPct: i.discountPct ? Number(i.discountPct) : 0,
           finalPrice: Number(i.finalPrice),
           sourceItemId: i.sourceItemId,
+          graduationPct: i.graduationPct ? Number(i.graduationPct) : undefined,
+          basePrice: i.basePrice ? Number(i.basePrice) : undefined,
         })),
       }}
     />

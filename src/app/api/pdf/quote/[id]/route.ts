@@ -50,6 +50,8 @@ export async function GET(
           quantity: i.quantity,
           unitPrice: Number(i.unitPrice),
           finalPrice: Number(i.finalPrice),
+          graduationPct: i.graduationPct ? Number(i.graduationPct) : null,
+          basePrice: i.basePrice ? Number(i.basePrice) : null,
         })),
         totalGross: Number(quote.totalGross),
         totalNet: Number(quote.totalNet),

@@ -47,6 +47,8 @@ export function QuoteStep3() {
           discountPct: item.discountPct,
           sortOrder: i,
           sourceItemId: item.sourceItemId,
+          graduationPct: item.graduationPct ?? null,
+          basePrice: item.basePrice ?? null,
         })),
       });
       // redirect happens inside createQuote
@@ -84,21 +86,41 @@ export function QuoteStep3() {
           const catItems = draft.items.filter((i) => i.category === cat);
           const subtotal = calcCategorySubtotal(draft.items, cat);
           return (
-            <div
-              key={cat}
-              className="flex items-center justify-between rounded-xl bg-creme px-4 py-3"
-            >
-              <div>
-                <p className="text-sm font-medium text-noite">
-                  {categoryLabels[cat]}
-                </p>
-                <p className="text-xs text-noite/50">
-                  {catItems.length} item(ns)
-                </p>
+            <div key={cat} className="rounded-xl bg-creme overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-noite">
+                    {categoryLabels[cat]}
+                  </p>
+                  <p className="text-xs text-noite/50">
+                    {catItems.length} item(ns)
+                  </p>
+                </div>
+                <span className="text-sm font-mono font-medium text-noite">
+                  {formatBRL(subtotal)}
+                </span>
               </div>
-              <span className="text-sm font-mono font-medium text-noite">
-                {formatBRL(subtotal)}
-              </span>
+              {/* Detalhes dos itens */}
+              <div className="border-t border-ceu/10">
+                {catItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between px-4 py-1.5 text-xs border-b border-ceu/5 last:border-b-0"
+                  >
+                    <span className="text-noite/70 truncate flex-1 mr-2">
+                      {item.description}
+                    </span>
+                    <span className="font-mono text-noite/50 whitespace-nowrap">
+                      {item.category === "GRADUACAO" && item.graduationPct != null
+                        ? `${Math.round(item.graduationPct * 100)}% × ${item.quantity} tam.`
+                        : `×${item.quantity}`}
+                    </span>
+                    <span className="font-mono font-medium text-noite ml-3 w-20 text-right">
+                      {formatBRL(item.finalPrice)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           );
         })}

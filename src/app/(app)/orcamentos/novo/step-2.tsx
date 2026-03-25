@@ -17,9 +17,6 @@ import {
   ChevronDown,
   Trash2,
   Copy,
-  Pencil,
-  X,
-  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +55,7 @@ const serviceCreateFields: CreateField[] = [
 
 export function QuoteStep2() {
   const store = useQuoteDraft();
-  const { draft, addItem, updateItem, removeItem, prevStep, nextStep } = store;
+  const { draft, addItem, updateItem, removeItem, updateItemGraduationPct, prevStep, nextStep } = store;
   const { toast } = useToast();
   const [pricingItems, setPricingItems] = useState<PricingOption[]>([]);
   const [config, setConfig] = useState<PricingConfigValues | null>(null);
@@ -218,6 +215,11 @@ export function QuoteStep2() {
                     item={item}
                     onUpdate={(changes) => updateItem(item.id, changes)}
                     onRemove={() => removeItem(item.id)}
+                    onGradPctChange={
+                      item.category === "GRADUACAO"
+                        ? (pct) => updateItemGraduationPct(item.id, pct)
+                        : undefined
+                    }
                   />
                 ))}
 
@@ -284,31 +286,40 @@ export function QuoteStep2() {
 
 // ─── Item Row ───
 
+const inlineInputClass =
+  "rounded-lg border-[1.5px] border-mar/30 bg-espuma/30 px-2.5 py-1.5 font-mono text-[13px] font-medium text-mar text-center focus:border-mar focus:bg-white focus:outline-none focus:ring-[3px] focus:ring-mar/12 transition-colors";
+
 function ItemRow({
   item,
   onUpdate,
   onRemove,
+  onGradPctChange,
 }: {
   item: QuoteItemDraft;
   onUpdate: (changes: Partial<QuoteItemDraft>) => void;
   onRemove: () => void;
+  onGradPctChange?: (pct: number) => void;
 }) {
-  const [editingQty, setEditingQty] = useState(false);
-  const [qtyStr, setQtyStr] = useState(String(item.quantity));
-  const [editingPrice, setEditingPrice] = useState(false);
+  const isGrad = item.category === "GRADUACAO" && item.basePrice != null;
+
   const [priceStr, setPriceStr] = useState(
     item.unitPrice.toFixed(2).replace(".", ",")
   );
+  const [qtyStr, setQtyStr] = useState(String(item.quantity));
+  const [pctStr, setPctStr] = useState(
+    isGrad ? String(Math.round((item.graduationPct ?? 0.25) * 100)) : ""
+  );
 
-  function commitQty() {
-    const v = parseInt(qtyStr);
-    if (v >= 1) {
-      onUpdate({ quantity: v });
-    } else {
-      setQtyStr(String(item.quantity));
-    }
-    setEditingQty(false);
-  }
+  // Sync local state when store changes externally
+  useEffect(() => {
+    setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
+  }, [item.unitPrice]);
+  useEffect(() => {
+    setQtyStr(String(item.quantity));
+  }, [item.quantity]);
+  useEffect(() => {
+    if (isGrad) setPctStr(String(Math.round((item.graduationPct ?? 0.25) * 100)));
+  }, [item.graduationPct, isGrad]);
 
   function commitPrice() {
     const v = parseBRL(priceStr);
@@ -317,7 +328,24 @@ function ItemRow({
     } else {
       setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
     }
-    setEditingPrice(false);
+  }
+
+  function commitQty() {
+    const v = parseInt(qtyStr);
+    if (v >= 1) {
+      onUpdate({ quantity: v });
+    } else {
+      setQtyStr(String(item.quantity));
+    }
+  }
+
+  function commitPct() {
+    const v = parseInt(pctStr);
+    if (v >= 1 && v <= 100 && onGradPctChange) {
+      onGradPctChange(v / 100);
+    } else {
+      setPctStr(String(Math.round((item.graduationPct ?? 0.25) * 100)));
+    }
   }
 
   return (
@@ -337,80 +365,98 @@ function ItemRow({
         </button>
       </div>
 
-      {/* Row 2: price × qty = total */}
+      {/* Row 2: price (× pct for GRAD) × qty = total */}
       <div className="flex items-center gap-2 flex-wrap">
-        {/* Unit price */}
+        {/* Unit price — always-visible input */}
         <div className="flex items-center gap-1">
           <span className="text-[10px] text-noite/40">R$</span>
-          {editingPrice ? (
-            <input
-              type="text"
-              inputMode="decimal"
-              autoFocus
-              value={priceStr}
-              onChange={(e) => setPriceStr(e.target.value)}
-              onBlur={commitPrice}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") commitPrice();
-                if (e.key === "Escape") {
-                  setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
-                  setEditingPrice(false);
-                }
-              }}
-              className="w-20 rounded border border-mar/40 bg-espuma/20 px-1.5 py-1 text-xs font-mono text-noite text-right focus:outline-none focus:ring-2 focus:ring-mar/30"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
+          <input
+            type="text"
+            inputMode="decimal"
+            value={priceStr}
+            onChange={(e) => setPriceStr(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onBlur={commitPrice}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+              if (e.key === "Escape") {
                 setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
-                setEditingPrice(true);
-              }}
-              className="text-xs font-mono text-mar hover:text-mar-dark underline underline-offset-2"
-            >
-              {item.unitPrice.toFixed(2).replace(".", ",")}
-            </button>
-          )}
+                (e.target as HTMLInputElement).blur();
+              }
+            }}
+            className={cn(
+              inlineInputClass,
+              "w-[88px]",
+              isGrad && "bg-noite/5 border-noite/15 text-noite/50"
+            )}
+            readOnly={isGrad}
+            tabIndex={isGrad ? -1 : 0}
+          />
         </div>
+
+        {/* Graduation % field */}
+        {isGrad && (
+          <>
+            <div className="flex items-center gap-1">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={pctStr}
+                onChange={(e) => setPctStr(e.target.value.replace(/\D/g, ""))}
+                onFocus={(e) => e.target.select()}
+                onBlur={commitPct}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                  if (e.key === "Escape") {
+                    setPctStr(String(Math.round((item.graduationPct ?? 0.25) * 100)));
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                className={cn(inlineInputClass, "w-[52px]")}
+              />
+              <span className="text-[10px] text-noite/40">%</span>
+            </div>
+          </>
+        )}
 
         <span className="text-[10px] text-noite/40">×</span>
 
-        {/* Quantity */}
-        {editingQty ? (
+        {/* Quantity — always-visible input */}
+        <div className="flex items-center gap-1">
           <input
             type="text"
             inputMode="numeric"
-            autoFocus
             value={qtyStr}
             onChange={(e) => setQtyStr(e.target.value.replace(/\D/g, ""))}
+            onFocus={(e) => e.target.select()}
             onBlur={commitQty}
             onKeyDown={(e) => {
-              if (e.key === "Enter") commitQty();
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
               if (e.key === "Escape") {
                 setQtyStr(String(item.quantity));
-                setEditingQty(false);
+                (e.target as HTMLInputElement).blur();
               }
             }}
-            className="w-12 rounded border border-mar/40 bg-espuma/20 px-1.5 py-1 text-xs font-mono text-noite text-center focus:outline-none focus:ring-2 focus:ring-mar/30"
+            className={cn(inlineInputClass, "w-[52px]")}
           />
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              setQtyStr(String(item.quantity));
-              setEditingQty(true);
-            }}
-            className="text-xs font-mono text-mar hover:text-mar-dark underline underline-offset-2"
-          >
-            {item.quantity}
-          </button>
-        )}
+          {/* TASK-04: label "tamanhos" para GRADUACAO */}
+          <span className="text-[10px] text-noite/40">
+            {item.category === "GRADUACAO" ? "tam." : "un."}
+          </span>
+        </div>
 
         {/* Total */}
         <span className="text-xs font-mono font-semibold text-floresta ml-auto">
           = {formatBRL(item.finalPrice)}
         </span>
       </div>
+
+      {/* TASK-03: Linha de contexto — apenas para GRADUACAO */}
+      {isGrad && item.basePrice != null && (
+        <p className="text-xs text-noite/50 mt-1.5">
+          Baseado em {formatBRL(item.basePrice)} · {item.description}
+        </p>
+      )}
     </div>
   );
 }
