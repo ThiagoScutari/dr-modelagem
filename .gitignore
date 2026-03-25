@@ -1,0 +1,15 @@
+# Cole isso em .gitignore (crie o arquivo se não existir ainda)
+node_modules/
+.env.local
+.env
+.next/
+out/
+dist/
+*.log
+.vercel/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+prisma/migrations/dev/
