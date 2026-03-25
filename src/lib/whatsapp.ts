@@ -34,6 +34,38 @@ export function buildWhatsAppMessage(quote: QuoteForWhatsApp): string {
   return encodeURIComponent(lines.join("\n"));
 }
 
+// ─── Despesas ───
+
+interface ExpenseForWhatsApp {
+  description: string;
+  category: string;
+  amount: number;
+  date: string;
+}
+
+export function buildExpensesWhatsAppMessage(
+  expenses: ExpenseForWhatsApp[],
+  period: string,
+  clientName?: string
+): string {
+  const items = expenses
+    .map((e) => `• ${e.description}: ${formatBRL(e.amount)}`)
+    .join("\n");
+
+  const total = expenses.reduce((s, e) => s + e.amount, 0);
+
+  const lines = [
+    `*Relatório de Despesas — DR Modelagem*`,
+    `Período: ${period}`,
+  ];
+
+  if (clientName) lines.push(`Cliente: ${clientName}`);
+
+  lines.push(``, items, ``, `*Total: ${formatBRL(total)}*`);
+
+  return encodeURIComponent(lines.join("\n"));
+}
+
 export function buildWhatsAppUrl(phone: string, message: string): string {
   const digits = phone.replace(/\D/g, "");
   const withCountry = digits.startsWith("55") ? digits : `55${digits}`;
