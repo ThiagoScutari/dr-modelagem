@@ -41,8 +41,57 @@ export function formatCPF(cpf: string): string {
 }
 
 /**
+ * Formata percentual: 0.25 → "25%"
+ */
+export function formatPercent(value: number): string {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "percent",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+/**
  * Formata data para pt-BR: 24/03/2026
  */
 export function formatDate(date: Date | string): string {
   return new Intl.DateTimeFormat("pt-BR").format(new Date(date));
+}
+
+/**
+ * Gera cor de avatar determinística por nome
+ */
+const avatarColors = [
+  "bg-mar text-white",
+  "bg-poente text-white",
+  "bg-floresta text-white",
+  "bg-noite text-white",
+  "bg-areia text-noite",
+] as const;
+
+export function avatarColor(name: string): string {
+  const index = name.charCodeAt(0) % avatarColors.length;
+  return avatarColors[index];
+}
+
+/**
+ * Extrai iniciais do nome (máx 2 letras)
+ */
+export function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+/**
+ * Converte string monetária BR ("1.234,56") para number
+ */
+export function parseBRL(value: string): number {
+  const cleaned = value.replace(/[R$\s.]/g, "").replace(",", ".");
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
 }
