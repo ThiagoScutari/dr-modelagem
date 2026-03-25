@@ -28,7 +28,11 @@
       "Bash(git merge:*)",
       "Bash(git stash:*)",
       "Bash(npx vitest:*)",
-      "Bash(ls \"src/app/\\(app\\)/dashboard/loading.tsx\" \"src/app/\\(app\\)/despesas/loading.tsx\" \"src/app/\\(app\\)/orcamentos/loading.tsx\")"
+      "Bash(ls \"src/app/\\(app\\)/dashboard/loading.tsx\" \"src/app/\\(app\\)/despesas/loading.tsx\" \"src/app/\\(app\\)/orcamentos/loading.tsx\")",
+      "Bash(npx playwright:*)",
+      "Bash(for file:*)",
+      "Bash(do)",
+      "Bash(sed -i 's/fixed bottom-24 right-5/fixed bottom-24 right-5 lg:bottom-8/g' \"$file\")"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
@@ -45,7 +49,8 @@
       "C:\\workspace\\dr-modelagem\\src\\lib",
       "C:\\workspace\\dr-modelagem\\src\\app\\api\\pdf",
       "C:\\workspace\\dr-modelagem\\src\\components\\dashboard",
-      "C:\\workspace\\dr-modelagem\\src\\app\\api"
+      "C:\\workspace\\dr-modelagem\\src\\app\\api",
+      "C:\\workspace\\dr-modelagem\\images"
     ]
   }
 }
