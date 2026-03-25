@@ -32,7 +32,7 @@ export function Sidebar() {
           alt="DR Modelagem"
           width={40}
           height={40}
-          className="rounded-full brightness-0 invert"
+          className="rounded-full bg-white p-1"
         />
         <div>
           <p className="text-sm font-display font-medium text-white">

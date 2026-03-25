@@ -11,13 +11,15 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ComboCreate, type CreateField } from "@/components/ui/combo-create";
 import type { PricingConfigValues, ServiceCategory } from "@/types/quote";
+import type { QuoteItemDraft } from "@/types/quote";
 import type { PricingUnit } from "@prisma/client";
 import {
   ChevronDown,
   Trash2,
   Copy,
-  SlidersHorizontal,
-  Plus,
+  Pencil,
+  X,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -63,7 +65,9 @@ export function QuoteStep2() {
   const [expandedCats, setExpandedCats] = useState<Set<ServiceCategory>>(
     new Set(["MODELAGEM"])
   );
-  const [replicateFrom, setReplicateFrom] = useState<ServiceCategory | null>(null);
+  const [replicateFrom, setReplicateFrom] = useState<ServiceCategory | null>(
+    null
+  );
 
   useEffect(() => {
     listPricingItems().then((items) =>
@@ -89,7 +93,6 @@ export function QuoteStep2() {
     });
   }, []);
 
-  // Categorias visíveis: defaults + qualquer que tenha itens
   const activeCats = new Set<ServiceCategory>(defaultCategories);
   draft.items.forEach((i) => activeCats.add(i.category));
 
@@ -147,7 +150,6 @@ export function QuoteStep2() {
       toast("Nenhum item na categoria origem", "warning");
       return;
     }
-    const existingInTarget = draft.items.some((i) => i.category === to);
     store.replicateCategory(replicateFrom, to, config, false);
     toast(
       `${sourceItems.length} item(ns) replicado(s) para ${categoryLabels[to]}`,
@@ -175,7 +177,7 @@ export function QuoteStep2() {
         const catPricing = pricingItems.filter((p) => p.category === cat);
 
         return (
-          <div key={cat} className="card p-0 overflow-hidden">
+          <div key={cat} className="card p-0" style={{ overflow: "visible" }}>
             {/* Header */}
             <button
               type="button"
@@ -220,7 +222,7 @@ export function QuoteStep2() {
                 ))}
 
                 {/* Add item via ComboCreate */}
-                <div className="p-3 border-t border-ceu/10">
+                <div className="relative p-3 border-t border-ceu/10" style={{ overflow: "visible" }}>
                   <ComboCreate<PricingOption>
                     items={catPricing}
                     value={null}
@@ -287,88 +289,127 @@ function ItemRow({
   onUpdate,
   onRemove,
 }: {
-  item: import("@/types/quote").QuoteItemDraft;
-  onUpdate: (changes: Partial<import("@/types/quote").QuoteItemDraft>) => void;
+  item: QuoteItemDraft;
+  onUpdate: (changes: Partial<QuoteItemDraft>) => void;
   onRemove: () => void;
 }) {
-  const [swiped, setSwiped] = useState(false);
+  const [editingQty, setEditingQty] = useState(false);
+  const [qtyStr, setQtyStr] = useState(String(item.quantity));
+  const [editingPrice, setEditingPrice] = useState(false);
+  const [priceStr, setPriceStr] = useState(
+    item.unitPrice.toFixed(2).replace(".", ",")
+  );
+
+  function commitQty() {
+    const v = parseInt(qtyStr);
+    if (v >= 1) {
+      onUpdate({ quantity: v });
+    } else {
+      setQtyStr(String(item.quantity));
+    }
+    setEditingQty(false);
+  }
+
+  function commitPrice() {
+    const v = parseBRL(priceStr);
+    if (v > 0) {
+      onUpdate({ unitPrice: v });
+    } else {
+      setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
+    }
+    setEditingPrice(false);
+  }
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Delete bg */}
-      <div className="absolute inset-y-0 right-0 flex items-center bg-coral px-4">
+    <div className="px-4 py-3 border-b border-ceu/5">
+      {/* Row 1: description + delete */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="text-sm text-noite flex-1 truncate">
+          {item.description}
+        </span>
         <button
           type="button"
           onClick={onRemove}
-          className="text-white text-xs font-medium"
+          className="text-noite/30 hover:text-coral p-1.5 rounded-lg hover:bg-coral/5 tap-target flex items-center justify-center"
+          aria-label="Remover item"
         >
-          Remover
+          <Trash2 className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Content */}
-      <div
-        className={cn(
-          "relative bg-white px-4 py-3 transition-transform duration-200",
-          swiped && "-translate-x-24"
-        )}
-        onTouchStart={(e) => {
-          const startX = e.touches[0].clientX;
-          const handleMove = (ev: TouchEvent) => {
-            const diff = startX - ev.touches[0].clientX;
-            setSwiped(diff > 60);
-          };
-          const handleEnd = () => {
-            document.removeEventListener("touchmove", handleMove);
-            document.removeEventListener("touchend", handleEnd);
-          };
-          document.addEventListener("touchmove", handleMove);
-          document.addEventListener("touchend", handleEnd);
-        }}
-        onClick={() => swiped && setSwiped(false)}
-      >
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-sm text-noite flex-1 truncate">
-            {item.description}
-          </span>
-          <button
-            type="button"
-            onClick={onRemove}
-            className="text-noite/20 hover:text-coral p-1 sm:block hidden"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        </div>
-        <div className="flex items-center gap-3 mt-1.5">
-          <div className="flex items-center gap-1">
-            <label className="text-[10px] text-noite/40">R$</label>
+      {/* Row 2: price × qty = total */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {/* Unit price */}
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-noite/40">R$</span>
+          {editingPrice ? (
             <input
               type="text"
               inputMode="decimal"
-              value={item.unitPrice.toFixed(2).replace(".", ",")}
-              onChange={(e) => {
-                const v = parseBRL(e.target.value);
-                if (v >= 0) onUpdate({ unitPrice: v });
+              autoFocus
+              value={priceStr}
+              onChange={(e) => setPriceStr(e.target.value)}
+              onBlur={commitPrice}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") commitPrice();
+                if (e.key === "Escape") {
+                  setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
+                  setEditingPrice(false);
+                }
               }}
-              className="w-20 rounded border border-ceu/30 bg-transparent px-1.5 py-0.5 text-xs font-mono text-noite text-right focus:outline-none focus:ring-1 focus:ring-mar/30"
+              className="w-20 rounded border border-mar/40 bg-espuma/20 px-1.5 py-1 text-xs font-mono text-noite text-right focus:outline-none focus:ring-2 focus:ring-mar/30"
             />
-          </div>
-          <div className="flex items-center gap-1">
-            <label className="text-[10px] text-noite/40">×</label>
-            <input
-              type="number"
-              min={1}
-              value={item.quantity}
-              onChange={(e) =>
-                onUpdate({ quantity: Math.max(1, parseInt(e.target.value) || 1) })
-              }
-              className="w-12 rounded border border-ceu/30 bg-transparent px-1.5 py-0.5 text-xs font-mono text-noite text-center focus:outline-none focus:ring-1 focus:ring-mar/30"
-            />
-          </div>
-          <span className="text-xs font-mono font-medium text-floresta ml-auto">
-            {formatBRL(item.finalPrice)}
-          </span>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setPriceStr(item.unitPrice.toFixed(2).replace(".", ","));
+                setEditingPrice(true);
+              }}
+              className="text-xs font-mono text-mar hover:text-mar-dark underline underline-offset-2"
+            >
+              {item.unitPrice.toFixed(2).replace(".", ",")}
+            </button>
+          )}
         </div>
+
+        <span className="text-[10px] text-noite/40">×</span>
+
+        {/* Quantity */}
+        {editingQty ? (
+          <input
+            type="text"
+            inputMode="numeric"
+            autoFocus
+            value={qtyStr}
+            onChange={(e) => setQtyStr(e.target.value.replace(/\D/g, ""))}
+            onBlur={commitQty}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") commitQty();
+              if (e.key === "Escape") {
+                setQtyStr(String(item.quantity));
+                setEditingQty(false);
+              }
+            }}
+            className="w-12 rounded border border-mar/40 bg-espuma/20 px-1.5 py-1 text-xs font-mono text-noite text-center focus:outline-none focus:ring-2 focus:ring-mar/30"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setQtyStr(String(item.quantity));
+              setEditingQty(true);
+            }}
+            className="text-xs font-mono text-mar hover:text-mar-dark underline underline-offset-2"
+          >
+            {item.quantity}
+          </button>
+        )}
+
+        {/* Total */}
+        <span className="text-xs font-mono font-semibold text-floresta ml-auto">
+          = {formatBRL(item.finalPrice)}
+        </span>
       </div>
     </div>
   );
@@ -402,8 +443,8 @@ function ReplicateSheet({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
-      <div className="w-full max-w-lg rounded-t-2xl bg-white p-5 shadow-float">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
+      <div className="w-full max-w-lg rounded-t-2xl bg-white p-5 shadow-float sm:rounded-2xl">
         <h3 className="font-display text-lg font-medium text-noite mb-1">
           Replicar {fromLabel}
         </h3>
