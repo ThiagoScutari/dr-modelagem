@@ -71,14 +71,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   totalLabel: {
-    fontSize: 14,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     marginRight: 20,
   },
   totalValue: {
-    fontSize: 14,
-    fontFamily: "Helvetica-Bold",
-    color: "#1A6E8C",
+    fontSize: 10,
+    textAlign: "right" as const,
   },
   info: {
     marginBottom: 16,
@@ -89,12 +88,6 @@ const styles = StyleSheet.create({
   infoLine: {
     fontSize: 9,
     marginBottom: 2,
-  },
-  observations: {
-    marginTop: 20,
-    fontSize: 7,
-    color: "#6B6B6B",
-    lineHeight: 1.6,
   },
   footer: {
     position: "absolute",
@@ -265,22 +258,6 @@ export function QuotePDF({
           <Text style={styles.totalValue}>
             {formatCurrency(quote.totalNet)}
           </Text>
-        </View>
-
-        {/* Notes */}
-        {quote.notes && (
-          <View style={{ marginTop: 12 }}>
-            <Text style={{ fontSize: 8, color: "#6B6B6B" }}>
-              Obs: {quote.notes}
-            </Text>
-          </View>
-        )}
-
-        {/* Observations */}
-        <View style={styles.observations}>
-          {presenter.observations.split("\n").map((line, i) => (
-            <Text key={i}>{line}</Text>
-          ))}
         </View>
 
         {/* Footer */}
