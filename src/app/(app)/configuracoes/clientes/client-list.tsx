@@ -113,7 +113,7 @@ export function ClientList({ initialClients }: Props) {
       <button
         type="button"
         onClick={() => setShowForm(true)}
-        className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-mar text-white shadow-float hover:bg-mar-dark active:scale-95 transition-all"
+        className="fixed bottom-24 right-5 lg:bottom-8 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-mar text-white shadow-float hover:bg-mar-dark active:scale-95 transition-all"
         aria-label="Adicionar cliente"
       >
         <Plus className="h-6 w-6" />

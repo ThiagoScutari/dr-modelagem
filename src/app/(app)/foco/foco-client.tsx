@@ -31,12 +31,18 @@ export function FocoClient({ initialTasks, statsToday, statsWeek }: Props) {
   const pendingTasks = initialTasks.filter((t) => !t.completedAt);
 
   return (
-    <div className="space-y-6">
-      <PomodoroTimer
-        tasks={pendingTasks.map((t) => ({ id: t.id, title: t.title }))}
-      />
-      <TodoList initialTasks={initialTasks} />
-      <PomodoroStatsCards today={statsToday} week={statsWeek} />
+    <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
+      {/* Left: Timer + Stats */}
+      <div className="space-y-6">
+        <PomodoroTimer
+          tasks={pendingTasks.map((t) => ({ id: t.id, title: t.title }))}
+        />
+        <PomodoroStatsCards today={statsToday} week={statsWeek} />
+      </div>
+      {/* Right: Todo */}
+      <div>
+        <TodoList initialTasks={initialTasks} />
+      </div>
     </div>
   );
 }

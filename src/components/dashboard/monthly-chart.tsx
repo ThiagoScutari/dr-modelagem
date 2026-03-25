@@ -51,7 +51,7 @@ export function MonthlyChart({ data }: { data: ChartData[] }) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="100%" height={200} className="lg:!h-[280px]">
       <BarChart data={data} barGap={2}>
         <XAxis
           dataKey="month"

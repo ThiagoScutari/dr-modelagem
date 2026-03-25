@@ -108,8 +108,8 @@ export function DashboardClient({ summary: initialSummary, monthly, recentQuotes
         ))}
       </div>
 
-      {/* Metric cards 2×2 */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Metric cards 2×2 → 4 on desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <MetricCard
           icon={TrendingUp}
           label="Receita"
@@ -144,8 +144,11 @@ export function DashboardClient({ summary: initialSummary, monthly, recentQuotes
         <MonthlyChart data={monthly} />
       </div>
 
+      {/* Recentes + Atalhos: side by side on desktop */}
+      <div className="lg:grid lg:grid-cols-3 lg:gap-6">
+
       {/* Recent quotes */}
-      <div>
+      <div className="lg:col-span-2">
         <div className="flex items-center justify-between mb-2">
           <p className="text-sm font-medium text-noite">Orçamentos recentes</p>
           <Link
@@ -188,7 +191,7 @@ export function DashboardClient({ summary: initialSummary, monthly, recentQuotes
       </div>
 
       {/* Quick actions */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
         <Link
           href="/orcamentos/novo"
           className="flex flex-col items-center gap-1.5 rounded-xl bg-creme border border-mar/20 py-3 text-noite hover:bg-espuma/30 transition-colors tap-target"
@@ -211,6 +214,7 @@ export function DashboardClient({ summary: initialSummary, monthly, recentQuotes
           <span className="text-[10px] font-medium">Pomodoro</span>
         </Link>
       </div>
+      </div>{/* close lg:grid wrapper */}
     </div>
   );
 }
