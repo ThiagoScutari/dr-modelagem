@@ -23,7 +23,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-ceu/20 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-ceu/20 safe-bottom lg:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
         {tabs.map((tab) => {
           const isActive =
