@@ -97,3 +97,38 @@ export async function getClient(id: string) {
     },
   });
 }
+
+export async function getClientStats(id: string) {
+  const [revenue, expenses, recentQuotes] = await Promise.all([
+    prisma.quote.findMany({
+      where: { clientId: id, status: "FINALIZADO" },
+      select: { totalNet: true },
+    }),
+    prisma.expense.findMany({
+      where: { clientId: id },
+      select: { amount: true },
+    }),
+    prisma.quote.findMany({
+      where: { clientId: id },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        status: true,
+        totalNet: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  return {
+    totalRevenue: revenue.reduce((s, q) => s + Number(q.totalNet), 0),
+    totalExpenses: expenses.reduce((s, e) => s + Number(e.amount), 0),
+    recentQuotes: recentQuotes.map((q) => ({
+      id: q.id,
+      status: q.status,
+      totalNet: Number(q.totalNet),
+      createdAt: q.createdAt.toISOString(),
+    })),
+  };
+}
