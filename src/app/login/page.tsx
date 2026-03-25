@@ -14,6 +14,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Reset password state
+  const [showReset, setShowReset] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetting, setResetting] = useState(false);
+  const [resetMessage, setResetMessage] = useState("");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -32,6 +38,30 @@ export default function LoginPage() {
     }
 
     router.push("/dashboard");
+  }
+
+  async function handleResetPassword() {
+    const targetEmail = resetEmail || email;
+    if (!targetEmail.trim()) {
+      setResetMessage("Digite seu e-mail acima.");
+      return;
+    }
+
+    setResetting(true);
+    setResetMessage("");
+
+    try {
+      await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: targetEmail.trim() }),
+      });
+      setResetMessage("Senha enviada pelo Telegram!");
+    } catch {
+      setResetMessage("Erro ao enviar. Tente novamente.");
+    }
+
+    setResetting(false);
   }
 
   return (
@@ -67,7 +97,10 @@ export default function LoginPage() {
               autoComplete="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (!resetEmail) setResetEmail(e.target.value);
+              }}
               placeholder="seu@email.com"
               className="input-base"
             />
@@ -125,6 +158,48 @@ export default function LoginPage() {
             )}
           </button>
         </form>
+
+        {/* Esqueci minha senha */}
+        <div className="text-center">
+          {!showReset ? (
+            <button
+              type="button"
+              onClick={() => setShowReset(true)}
+              className="text-sm text-noite/50 hover:text-noite/70 transition-colors"
+            >
+              Esqueci minha senha
+            </button>
+          ) : (
+            <div className="space-y-3 rounded-xl bg-white/50 p-4">
+              <p className="text-xs text-noite/60">
+                Uma senha temporária será enviada pelo Telegram.
+              </p>
+              <input
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                placeholder="seu@email.com"
+                className="input-base text-sm"
+              />
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                disabled={resetting}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-noite/10 py-2.5 text-xs font-medium text-noite/70 hover:bg-noite/15 disabled:opacity-60 tap-target"
+              >
+                {resetting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : null}
+                {resetting ? "Enviando..." : "Enviar senha pelo Telegram"}
+              </button>
+              {resetMessage && (
+                <p className="text-xs font-medium text-floresta">
+                  {resetMessage}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

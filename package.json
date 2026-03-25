@@ -7,7 +7,10 @@
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "prisma db seed --config prisma/prisma.config.ts",
+    "db:migrate": "prisma migrate dev --config prisma/prisma.config.ts",
+    "db:studio": "prisma studio --config prisma/prisma.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
