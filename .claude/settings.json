@@ -41,7 +41,15 @@
       "Bash(printf \"4ed73a88d0f13fc6a0cb7d7493000b89201b4a1302921f831d13c04725ac367f\")",
       "Bash(vercel inspect:*)",
       "Bash(vercel logs:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(printf \"https://dr-modelagem.vercel.app\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/auth/reset-password -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"debora@drmodelagem.com\"\"}')",
+      "Bash(curl -s -X POST https://dr-modelagem.vercel.app/api/auth/reset-password -H \"Content-Type: application/json\" -d '{\"\"email\"\":\"\"debora@drmodelagem.com\"\"}')",
+      "Bash(printf \"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:5432/postgres\")",
+      "Bash(printf \"postgresql://postgres:SOJvzL4uIohb9KZG@db.skmqqvzxnylepuvfxpyu.supabase.co:6543/postgres?pgbouncer=true\")",
+      "Bash(curl -s https://dr-modelagem.vercel.app/api/debug)",
+      "Bash(nslookup db.skmqqvzxnylepuvfxpyu.supabase.co)",
+      "Bash(printf \"postgresql://postgres.skmqqvzxnylepuvfxpyu:SOJvzL4uIohb9KZG@aws-1-us-east-1.pooler.supabase.com:5432/postgres\")"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
@@ -59,7 +67,8 @@
       "C:\\workspace\\dr-modelagem\\src\\app\\api\\pdf",
       "C:\\workspace\\dr-modelagem\\src\\components\\dashboard",
       "C:\\workspace\\dr-modelagem\\src\\app\\api",
-      "C:\\workspace\\dr-modelagem\\images"
+      "C:\\workspace\\dr-modelagem\\images",
+      "C:\\workspace\\dr-modelagem\\src\\app\\api\\debug"
     ]
   }
 }

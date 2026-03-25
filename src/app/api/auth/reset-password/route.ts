@@ -46,15 +46,9 @@ export async function POST(req: NextRequest) {
         `Troque sua senha após entrar.`
     );
 
-    return Response.json({
-      message: GENERIC_MESSAGE,
-      telegramSent: sent,
-    });
+    return Response.json({ message: GENERIC_MESSAGE });
   } catch (error) {
     console.error("[reset-password] Error:", error);
-    return Response.json(
-      { message: GENERIC_MESSAGE, error: "internal" },
-      { status: 500 }
-    );
+    return Response.json({ message: GENERIC_MESSAGE });
   }
 }
