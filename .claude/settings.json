@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/workspace/dr-modelagem//**)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --yes)",
+      "Read(//c/workspace/**)",
+      "Bash(npx create-next-app@latest dr-modelagem-temp --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --yes)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(mkdir -p /c/workspace/dr-modelagem/src/app/login)",
+      "Bash(cp /c/workspace/dr-modelagem/images/Logomarca.png /c/workspace/dr-modelagem/public/logo.png)",
+      "Bash(for dir:*)",
+      "Bash(do touch:*)",
+      "Bash(npm run:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\workspace\\dr-modelagem-temp",
+      "C:\\workspace\\dr-modelagem",
+      "C:\\workspace\\dr-modelagem\\src",
+      "C:\\workspace\\dr-modelagem\\src\\app\\api\\auth",
+      "C:\\workspace\\dr-modelagem\\src\\app",
+      "C:\\workspace\\dr-modelagem\\src\\components"
+    ]
+  }
+}
