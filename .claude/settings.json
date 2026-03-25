@@ -27,7 +27,8 @@
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
       "Bash(git stash:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(ls \"src/app/\\(app\\)/dashboard/loading.tsx\" \"src/app/\\(app\\)/despesas/loading.tsx\" \"src/app/\\(app\\)/orcamentos/loading.tsx\")"
     ],
     "additionalDirectories": [
       "C:\\workspace\\dr-modelagem-temp",
@@ -43,7 +44,8 @@
       "C:\\workspace\\dr-modelagem\\src\\app\\(app)\\orcamentos\\[id]",
       "C:\\workspace\\dr-modelagem\\src\\lib",
       "C:\\workspace\\dr-modelagem\\src\\app\\api\\pdf",
-      "C:\\workspace\\dr-modelagem\\src\\components\\dashboard"
+      "C:\\workspace\\dr-modelagem\\src\\components\\dashboard",
+      "C:\\workspace\\dr-modelagem\\src\\app\\api"
     ]
   }
 }
