@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { updatePresenterConfig } from "@/app/actions/presenter";
 
 interface Props {
   initialData: {
@@ -28,10 +29,20 @@ export function PrestadoraForm({ initialData }: Props) {
 
   async function handleSave() {
     setSaving(true);
-    // TODO: persistir em model dedicado (PresenterConfig) no Sprint futuro
-    await new Promise((r) => setTimeout(r, 500));
+    const result = await updatePresenterConfig({
+      name: data.name,
+      razaoSocial: data.razaoSocial,
+      cnpj: data.cnpj,
+      observations: data.observations,
+      telegramToken: data.telegramBotToken || undefined,
+      telegramChatId: data.telegramChatId || undefined,
+    });
     setSaving(false);
-    toast("Dados da prestadora salvos", "success");
+    if (result.success) {
+      toast("Dados da prestadora salvos", "success");
+    } else {
+      toast("Erro ao salvar dados", "error");
+    }
   }
 
   return (

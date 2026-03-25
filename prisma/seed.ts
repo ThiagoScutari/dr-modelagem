@@ -39,6 +39,28 @@ async function main() {
     console.log("✅ PricingConfig já existe");
   }
 
+  // ─── PresenterConfig (singleton) ───
+  const existingPresenter = await prisma.presenterConfig.findFirst();
+  if (!existingPresenter) {
+    await prisma.presenterConfig.create({
+      data: {
+        name: "Débora da Rosa",
+        razaoSocial: "Débora da Rosa Estúdio de Modelagem Têxtil",
+        cnpj: "49.647.364/0001-57",
+        observations: [
+          "1. Valores podem sofrer alteração de acordo com o nível de complexidade do modelo. Solicitar orçamento prévio.",
+          "2. A contagem do prazo só inicia após a entrega de todo o material (croqui, matéria-prima, especificações) e confirmação do pagamento.",
+          "3. Peça Piloto é obrigatória para o teste de modelagem e pode ser executada pela empresa contratante.",
+          "4. Deslocamento: além do valor por Km, o tempo em horário comercial é cobrado a 40% do valor da hora de trabalho.",
+          "5. Custos extras (alimentação, estadia e outros) para execução do serviço são de responsabilidade do contratante.",
+        ].join("\n"),
+      },
+    });
+    console.log("✅ PresenterConfig criado");
+  } else {
+    console.log("✅ PresenterConfig já existe");
+  }
+
   // ─── PricingItems — Tabela oficial de preços ───
   const pricingItems: {
     category: ServiceCategory;
