@@ -12,6 +12,18 @@
 
 ---
 
+![DR Modelagem — Visão Geral](images/infografico.png)
+
+---
+
+## Veja o app em funcionamento
+
+> **[Assistir ao vídeo demonstrativo](images/DR_Modelagem__Guia_Completo.mp4)**
+
+O vídeo mostra o fluxo completo: criar um orçamento, replicar para graduação com cálculo automático, gerar PDF e enviar pelo WhatsApp — tudo em minutos.
+
+---
+
 ## O que você pode fazer aqui
 
 **Criar orçamentos bonitos em minutos** — escolha o cliente, adicione os serviços e o valor é calculado automaticamente. Envie por WhatsApp ou baixe o PDF com a logo do estúdio.
@@ -195,7 +207,8 @@ O app se adapta automaticamente — no celular tem navegação na parte de baixo
 
 ## Desenvolvido com carinho
 
-Este app foi criado especialmente para o dia a dia do **Estúdio de Modelagem Têxtil da Débora da Rosa**. Cada tela, cada cálculo e cada atalho foi pensado para economizar o seu tempo e deixar seus orçamentos ainda mais profissionais.
+Este app foi criado especialmente para o **DR Modelagem — Estúdio de Modelagem Têxtil** da Débora da Rosa.
 
-*DR Modelagem — Hub de Gestão*
-*CNPJ 49.647.364/0001-57*
+Cada detalhe foi pensado para o seu dia a dia: as cores do mar que você ama, a sua logo, os seus preços, o seu jeito de trabalhar.
+
+**Débora**, este é o seu estúdio na palma da mão.
