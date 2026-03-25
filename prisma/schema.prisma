@@ -123,6 +123,8 @@ model QuoteItem {
   finalPrice    Decimal         @db.Decimal(10, 2)
   sortOrder     Int             @default(0)
   sourceItemId  String?
+  graduationPct Decimal?        @db.Decimal(5, 4)
+  basePrice     Decimal?        @db.Decimal(10, 2)
 
   @@map("quote_items")
 }
