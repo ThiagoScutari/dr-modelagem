@@ -11,45 +11,50 @@ export function generateTempPassword(): string {
   return `${word}@${num}`;
 }
 
+const GENERIC_MESSAGE =
+  "Se o e-mail estiver cadastrado, você receberá a nova senha pelo Telegram.";
+
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const body = await req.json();
+    const email = body?.email;
 
     if (!email || typeof email !== "string") {
-      return Response.json(
-        { message: "Se o e-mail estiver cadastrado, você receberá a nova senha pelo Telegram." },
-        { status: 200 }
-      );
+      return Response.json({ message: GENERIC_MESSAGE });
     }
 
     const user = await prisma.user.findUnique({
       where: { email: email.trim().toLowerCase() },
     });
 
-    if (user) {
-      const tempPassword = generateTempPassword();
-      const hashed = await hash(tempPassword, 12);
-
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { password: hashed },
-      });
-
-      await sendTelegramNotification(
-        `🔑 *Nova senha temporária*\n\n` +
-          `Senha: \`${tempPassword}\`\n\n` +
-          `Acesse: https://dr-modelagem.vercel.app\n` +
-          `Troque sua senha após entrar.`
-      );
+    if (!user) {
+      return Response.json({ message: GENERIC_MESSAGE });
     }
 
-    // Always return the same response — don't reveal if email exists
-    return Response.json({
-      message: "Se o e-mail estiver cadastrado, você receberá a nova senha pelo Telegram.",
+    const tempPassword = generateTempPassword();
+    const hashed = await hash(tempPassword, 12);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashed },
     });
-  } catch {
+
+    const sent = await sendTelegramNotification(
+      `🔑 *Nova senha temporária*\n\n` +
+        `Senha: \`${tempPassword}\`\n\n` +
+        `Acesse: https://dr-modelagem.vercel.app\n` +
+        `Troque sua senha após entrar.`
+    );
+
     return Response.json({
-      message: "Se o e-mail estiver cadastrado, você receberá a nova senha pelo Telegram.",
+      message: GENERIC_MESSAGE,
+      telegramSent: sent,
     });
+  } catch (error) {
+    console.error("[reset-password] Error:", error);
+    return Response.json(
+      { message: GENERIC_MESSAGE, error: "internal" },
+      { status: 500 }
+    );
   }
 }
