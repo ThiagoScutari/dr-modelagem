@@ -505,3 +505,17 @@ TOTAL = R$ 580 + R$ 870 = R$ 1.450,00 ✓
 - O PDF usa fontes incorporadas — importar Cormorant Garamond como base64 para o `@react-pdf/renderer`
 - O `replicateCategory` deve preservar os itens existentes na categoria destino por padrão (não substituir), com opção de substituir
 - Animações de swipe com `@use-gesture/react` ou implementação CSS pura
+
+---
+
+## Backlog herdado do Sprint 02
+
+### BACK-01 — Persistência de dados da prestadora
+**Arquivo:** src/app/(app)/configuracoes/prestadora/prestadora-form.tsx
+**Problema:** Save faz setTimeout fake — não persiste no banco.
+**Solução:** Criar model PresenterConfig no schema Prisma com campos:
+name, razaoSocial, cnpj, observacoes, telegramToken, telegramChatId.
+Implementar Server Action updatePresenterConfig.
+**Prioridade:** Alta — necessário antes do Sprint 3 (PDF usa dados da prestadora).
+**Impacto no Sprint 03:** O PDF de orçamento precisa dos dados reais
+(nome, CNPJ, observações). Resolver na TASK-01 do Sprint 03.
